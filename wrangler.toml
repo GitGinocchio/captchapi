@@ -1,0 +1,12 @@
+name = "captchapi"
+main = "build/worker/shim.mjs"
+compatibility_date = "2025-05-24"
+
+[observability.logs]
+enabled = true
+
+[limits]
+cpu_ms = 1000
+
+[build]
+command = "cargo install -q worker-build && worker-build"
