@@ -6,18 +6,18 @@ use getrandom::fill;
 
 const VALID_CHARS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-const SVG_TEMPLATE: &str = include_str!("../static/template.svg");
+const SVG_TEMPLATE: &str = include_str!("../public/template.svg");
 
-pub async fn get(req: Request, _ctx: RouteContext<()>) -> Result<Response> {
-    let url = req.url()?;
-    let _query_params = url.query();
+pub async fn post(_req: Request, _ctx: RouteContext<()>) -> Result<Response> {
+    //let url = req.url()?;
+    //let _query_params = url.query();
 
-    let url = req.url()?;
-    let segments: Vec<_> = url.path_segments().map_or(Vec::new(), |s| s.collect());
+    //let segments: Vec<_> = url.path_segments().map_or(Vec::new(), |s| s.collect());
 
     let letters = generate_random_letters(6);
     let svg = generate_svg(&letters.as_str());
 
+    /*
     match segments.as_slice() {
         ["captcha", "show"] => {
             let mut response = Response::from_body(ResponseBody::Body(svg.as_bytes().to_vec()))?;
@@ -43,6 +43,19 @@ pub async fn get(req: Request, _ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
     }
+    */
+    let svg_base64 = general_purpose::STANDARD.encode(svg.as_bytes());
+
+    let payload = json!({
+        "image": format!("data:image/svg+xml;base64,{}", svg_base64),
+        "text" : letters
+    });
+
+    let mut response = Response::from_json(&payload)?;
+    response.headers_mut().append("Content-Type", "application/json")?;
+    response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+
+    Ok(response)
 }
 
 fn random_range(min: f32, max: f32, byte: u8) -> f32 {

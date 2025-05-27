@@ -2,8 +2,11 @@ name = "captchapi"
 main = "build/worker/shim.mjs"
 compatibility_date = "2025-05-24"
 
+assets = { directory = "./src/public", binding = "public" }
+
 [observability.logs]
 enabled = true
+
 
 [limits]
 cpu_ms = 1000

@@ -2,7 +2,7 @@ use worker::*;
 
 pub mod routes;
 use crate::routes::index;
-use crate::routes::captcha;
+use crate::routes::generate;
 
 #[event(fetch)]
 async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
@@ -10,8 +10,8 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 
     let router = Router::new()
         .get_async("/", index::get)
-        .get_async("/captcha/show", captcha::get)
-        .get_async("/captcha", captcha::get);
+        //.get_async("/captcha/show", generate::get)
+        .post_async("/generate", generate::post);
 
     router.run(req, env).await
 }
