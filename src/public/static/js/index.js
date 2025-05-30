@@ -84,7 +84,7 @@ async function generateCaptcha() {
         <div class="loading-spinner"></div>
     `;
 
-    const response = await fetch(`${window.location.protocol}/generate`, { method : "POST" })
+    const response = await fetch(`${window.location.protocol}/captcha.json?height=200&width=500`, { method : "GET" })
     .then(res => res.json())
     .catch(error => {
         console.log(error);
