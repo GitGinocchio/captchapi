@@ -42,6 +42,10 @@ h1, h2, h3, h4 {
   line-height: 1.2;
 }
 
+a {
+  cursor: pointer;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
@@ -242,21 +246,21 @@ h1, h2, h3, h4 {
   gap: 0.5rem;
 }
 
-.dot {
+.code-dot {
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 50%;
 }
 
-.dot-red {
+.code-dot-red {
   background: #ef4444;
 }
 
-.dot-yellow {
+.code-dot-yellow {
   background: #f59e0b;
 }
 
-.dot-green {
+.code-dot-green {
   background: var(--color-success);
 }
 
@@ -282,7 +286,14 @@ h1, h2, h3, h4 {
   padding: 1.5rem;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
+  transition: transform 0.2s ease;
 }
+
+.card:hover,
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
 
 .feature-card h3 {
   font-size: 1.125rem;
@@ -310,6 +321,39 @@ h1, h2, h3, h4 {
 }
 
 /* Demo Section */
+#step-container {
+  overflow: hidden;
+  position: relative;
+}
+.step {
+  display: none;
+  height: 100%;
+  padding: 20px;
+}
+.step.active {
+  display: block;
+}
+
+#pagination-dots {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #64748b;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background-color: #2563eb;
+}
+
+
 .demo {
   padding: 5rem 0;
   background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
@@ -402,30 +446,38 @@ h1, h2, h3, h4 {
 
 /* Captcha Display */
 .captcha-display {
-  background: var(--color-secondary);
   border-radius: var(--radius);
-  padding: 2rem;
   text-align: center;
-  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
+  min-height: 100px;
+  min-width: 500px;
+}
+
+.captcha-display img {
+  border-radius: var(--radius);
 }
 
 .captcha-placeholder {
+  display: flex;
+  align-content: space-around;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
   text-align: center;
-}
-
-.captcha-sample {
   background: var(--color-background);
   padding: 1rem;
   border-radius: var(--radius);
   border: 2px dashed var(--color-border);
-  margin-bottom: 1rem;
+  height: 100px;
+  width: 500px;
 }
 
 .captcha-text {
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-family: 'Monaco', 'Menlo', monospace;
   font-weight: 700;
@@ -450,11 +502,6 @@ h1, h2, h3, h4 {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Result Info */
-.result-info {
-  margin-bottom: 1.5rem;
 }
 
 .info-row {
@@ -872,6 +919,34 @@ h1, h2, h3, h4 {
     font-size: 1rem;
   }
 }
+
+/* No Ui Sliders */
+
+/* Nasconde i tooltip di default */
+.noUi-tooltip {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Mostra il tooltip quando l'utente interagisce */
+.noUi-active .noUi-tooltip,
+.noUi-handle:hover .noUi-tooltip,
+.noUi-handle:focus .noUi-tooltip {
+  opacity: 1;
+}
+
+.noUi-connect {
+  background: var(--color-primary) !important;
+}
+
+.noUi-handle {
+  background-color: #fff;
+  border: 2px solid #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+
+/* Media */
 
 @media (min-width: 640px) {
   .hero-buttons {

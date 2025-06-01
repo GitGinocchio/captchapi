@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Hero Section -->
@@ -37,7 +39,7 @@
                 
                 <div class="hero-buttons">
                     <button class="btn btn-primary" onclick="scrollToSection('demo')">Get Started</button>
-                    <button class="btn btn-outline" onclick="scrollToSection('docs')">View Documentation</button>
+                    <button class="btn btn-outline" onclick="scrollToTab('docs', 'endpoints')">View Documentation</button>
                 </div>
             </div>
 
@@ -78,9 +80,9 @@
                 <div class="code-window">
                     <div class="code-header">
                         <div class="code-dots">
-                            <div class="dot dot-red"></div>
-                            <div class="dot dot-yellow"></div>
-                            <div class="dot dot-green"></div>
+                            <div class="code-dot code-dot-red"></div>
+                            <div class="code-dot code-dot-yellow"></div>
+                            <div class="code-dot code-dot-green"></div>
                         </div>
                     </div>
                     <code class="code-content">curl -X GET https://captchapi.giulioo.workers.dev/captcha</code>
@@ -167,31 +169,204 @@
             <div class="demo-grid">
                 <div class="demo-config card">
                     <h3>Configuration</h3>
-                    
-                    <div class="form-group">
-                        <label for="difficulty">Difficulty Level: <span id="difficulty-value">3</span></label>
-                        <div class="slider-container">
-                            <input type="range" id="difficulty" min="1" max="5" value="3" class="slider">
-                            <div class="slider-labels">
-                                <span>Easy</span>
-                                <span>Hard</span>
+
+                    <div id="step-container">
+                        <div class="step" data-step="1">
+                            <div class="form-group">
+                                <label>Number of letters:</label>
+                                <div class="slider-container">
+                                    <div id="letters-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>1</span>
+                                        <span>6</span>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <div class="form-group">
+                                <label>Number of lines:</label>
+                                <div class="slider-container">
+                                    <div id="lines-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0</span>
+                                        <span>30</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of circles:</label>
+                                <div class="slider-container">
+                                    <div id="circles-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0</span>
+                                        <span>250</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number of paths:</label>
+                                <div class="slider-container">
+                                    <div id="paths-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0</span>
+                                        <span>250</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="form-group">
+                                <label>Blur:</label>
+                                <div class="slider-container">
+                                    <div id="blur-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0</span>
+                                        <span>1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Opacity:</label>
+                                <div class="slider-container">
+                                    <div id="opacity-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0</span>
+                                        <span>1</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Font size:</label>
+                                <div class="slider-container">
+                                    <div id="fsize-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>5.0</span>
+                                        <span>50.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rotation:</label>
+                                <div class="slider-container">
+                                    <div id="rotation-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>-360.0</span>
+                                        <span>360.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="3">
+                            <div class="form-group">
+                                <label>Letter scale x:</label>
+                                <div class="slider-container">
+                                    <div id="lscalex-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>3.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Letter scale y:</label>
+                                <div class="slider-container">
+                                    <div id="lscaley-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>3.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Noise lines width:</label>
+                                <div class="slider-container">
+                                    <div id="lwidth-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>10.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Noise lines opacity:</label>
+                                <div class="slider-container">
+                                    <div id="lopacity-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>1.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="4">
+                            <div class="form-group">
+                                <label>Noise circles radius:</label>
+                                <div class="slider-container">
+                                    <div id="cradius-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>10.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Noise circles opacity:</label>
+                                <div class="slider-container">
+                                    <div id="copacity-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>1.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Noise paths stroke:</label>
+                                <div class="slider-container">
+                                    <div id="pstroke-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>10.0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Noise paths length:</label>
+                                <div class="slider-container">
+                                    <div id="plength-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>100.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step" data-step="5">
+                            <div class="form-group">
+                                <label>Noise paths opacity:</label>
+                                <div class="slider-container">
+                                    <div id="popacity-slider"></div>
+                                    <div class="slider-labels">
+                                        <span>0.1</span>
+                                        <span>1.0</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="format">Output Format</label>
-                        <select id="format" class="select">
-                            <option value="png">PNG</option>
-                            <option value="jpeg">JPEG</option>
-                            <option value="svg">SVG</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="characters">Character Count</label>
-                        <input type="number" id="characters" value="5" min="3" max="8" class="input">
-                    </div>
+                    <div id="pagination-dots"></div>
 
                     <button id="generate-btn" class="btn btn-primary btn-full">Generate Captcha</button>
                 </div>
@@ -201,35 +376,16 @@
                     
                     <div class="captcha-display" id="captcha-display">
                         <div class="captcha-placeholder">
-                            <div class="captcha-sample">
-                                <span class="captcha-text">ABC123</span>
-                            </div>
-                            <p class="captcha-label">Sample captcha image</p>
+                            <span class="captcha-text">ABC123</span>
                         </div>
                     </div>
 
                     <div class="result-info">
-                        <div class="info-row">
-                            <span>Status:</span>
-                            <span class="badge badge-success" id="status-badge">Ready</span>
+                        <div class="form-group">
+                            <label for="characters">Captcha text</label>
+                            <input type="text" id="characters" class="input" placeholder="Write the text you see in the image here">
                         </div>
-                        <div class="info-row">
-                            <span>Format:</span>
-                            <span class="badge badge-secondary" id="format-badge">PNG</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Size:</span>
-                            <span>200x80px</span>
-                        </div>
-                    </div>
-
-                    <div class="api-response">
-                        <label>API Response</label>
-                        <pre id="api-response-code">{
-  "id": "cap_abc123",
-  "image_url": "/captcha/abc123.png",
-  "expires_at": "2024-01-01T12:00:00Z"
-}</pre>
+                        <button id="verify-btn" class="btn btn-primary btn-outline">I am not a robot</button>
                     </div>
                 </div>
             </div>
@@ -246,8 +402,8 @@
 
             <div class="tabs">
                 <div class="tab-buttons">
-                    <button class="tab-button active" data-tab="endpoints">Endpoints</button>
-                    <button class="tab-button" data-tab="examples">Code Examples</button>
+                    <button id="endpoints-btn" class="tab-button active" data-tab="endpoints">Endpoints</button>
+                    <button id="examples-btn" class="tab-button" data-tab="examples">Code Examples</button>
                 </div>
 
                 <div class="tab-content">
@@ -727,20 +883,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 <div class="footer-section">
                     <h4>Documentation</h4>
                     <ul>
-                        <li><a href="#">API Reference</a></li>
-                        <li><a href="#">Quick Start</a></li>
-                        <li><a href="#">Examples</a></li>
-                        <li><a href="#">SDKs</a></li>
+                        <li><a onclick="scrollToTab('docs', 'endpoints')">API Reference</a></li>
+                        <li><a onclick="scrollToSection('demo')">Quick Start</a></li>
+                        <li><a onclick="scrollToTab('docs', 'examples')">Examples</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
                     <h4>Support</h4>
                     <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Status Page</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Community</a></li>
+                        <!-- <li><a href="#">Help Center</a></li> -->
+                        <li><a href="https://gitginocchio.github.io/Status" target="_blank">Status Page</a></li>
+                        <li><a href="https://github.com/GitGinocchio" target="_blank">Contact Me</a></li>
+                        <!-- <li><a href="#">Community</a></li> -->
                     </ul>
                 </div>
 
@@ -758,7 +913,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             <div class="footer-separator"></div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024 Captcha API. All rights reserved.</p>
+                <p>&copy; 2025 Captcha API, Giulio Tognetto. All rights reserved.</p>
                 <div class="footer-links">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
