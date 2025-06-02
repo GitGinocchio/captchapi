@@ -385,7 +385,21 @@
                             <label for="characters">Captcha text</label>
                             <input type="text" id="characters" class="input" placeholder="Write the text you see in the image here">
                         </div>
-                        <button id="verify-btn" class="btn btn-primary btn-outline">I am not a robot</button>
+                        <div class="form-group">
+                            <button id="verify-btn" class="btn btn-outline btn-full">I am not a robot</button>
+                        </div>
+                        <div class="form-group">
+                            <div class="code-window" style="display: block; margin-bottom: 1.5rem">
+                                <div class="code-header">
+                                    <div class="code-dots">
+                                        <div class="code-dot code-dot-red"></div>
+                                        <div class="code-dot code-dot-yellow"></div>
+                                        <div class="code-dot code-dot-green"></div>
+                                    </div>
+                                </div>
+                                <code class="code-content" style="overflow-wrap: anywhere;" id="query-url"></code>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -746,21 +760,8 @@
                                 </div>
                                 <div class="code-block">
                                     <pre><code># Generate captcha
-curl -X POST https://api.example.com/captcha/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "difficulty": 3,
-    "format": "png",
-    "length": 5
-  }'
-
-# Verify captcha
-curl -X POST https://api.example.com/captcha/verify \
-  -H "Content-Type: application/json" \
-  -d '{
-    "captcha_id": "cap_abc123",
-    "solution": "ABC123"
-  }'</code></pre>
+curl -X GET https://captchapi.giulioo.workers.dev/captcha
+</code></pre>
                                 </div>
                             </div>
 
@@ -771,32 +772,11 @@ curl -X POST https://api.example.com/captcha/verify \
                                 </div>
                                 <div class="code-block">
                                     <pre><code>// Generate captcha
-const response = await fetch('https://api.example.com/captcha/generate', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    difficulty: 3,
-    format: 'png',
-    length: 5
-  })
-});
+const response = await fetch('https://captchapi.giulioo.workers.dev/captcha', { method: 'GET' });
 
 const captcha = await response.json();
 console.log(captcha);
-
-// Verify captcha
-const verifyResponse = await fetch('https://api.example.com/captcha/verify', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    captcha_id: captcha.id,
-    solution: userInput
-  })
-});</code></pre>
+</code></pre>
                                 </div>
                             </div>
 
@@ -809,27 +789,11 @@ const verifyResponse = await fetch('https://api.example.com/captcha/verify', {
                                     <pre><code>import requests
 
 # Generate captcha
-response = requests.post('https://api.example.com/captcha/generate', 
-    json={
-        'difficulty': 3,
-        'format': 'png',
-        'length': 5
-    }
-)
+response = requests.get('https://captchapi.giulioo.workers.dev/captcha')
 
 captcha = response.json()
 print(captcha)
-
-# Verify captcha
-verify_response = requests.post('https://api.example.com/captcha/verify',
-    json={
-        'captcha_id': captcha['id'],
-        'solution': user_input
-    }
-)
-
-result = verify_response.json()
-print(f"Valid: {result['valid']}")</code></pre>
+</code></pre>
                                 </div>
                             </div>
 
@@ -848,12 +812,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     // Generate captcha
     let response = client
-        .post("https://api.example.com/captcha/generate")
-        .json(&json!({
-            "difficulty": 3,
-            "format": "png",
-            "length": 5
-        }))
+        .get("https://captchapi.giulioo.workers.dev/captcha")
         .send()
         .await?;
     

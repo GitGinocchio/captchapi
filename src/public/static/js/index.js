@@ -18,7 +18,7 @@ function scrollToTab(section, tab) {
 document.addEventListener("DOMContentLoaded", (event) => {
 let isGenerating = false;
 let scrolling = false;
-let touchStartY = 0;
+let touchStartX = 0;
 
 let captchaText = null;
 
@@ -27,6 +27,7 @@ const totalSteps = document.querySelectorAll('.step').length;
 
 const generateBtn = document.getElementById("generate-btn");
 const verifyBtn = document.getElementById("verify-btn");
+const userInput = document.getElementById("characters");
 const captchaDisplay = document.getElementById('captcha-display');
 const paginationDots = document.getElementById('pagination-dots');
 const stepContainer = document.getElementById('step-container');
@@ -58,6 +59,7 @@ const popacity_slider = document.getElementById('popacity-slider');
 
 const generateCaptchaDebounced = debounce(generateCaptcha, 750);
 generateBtn.addEventListener("click", generateCaptchaDebounced);
+verifyBtn.addEventListener("click", verifyCaptcha)
 
 function setupSliders() {
     noUiSlider.create(letters_slider, {
@@ -421,24 +423,24 @@ function showStep(step) {
 stepContainer.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (e.target.closest('.noUi-target') != null) return;
-    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
 }, { passive: false });
 
 stepContainer.addEventListener('touchend', (e) => {
     e.preventDefault();
     if (scrolling || e.target.closest('.noUi-target') != null) return;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaY = touchStartY - touchEndY;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchStartX - touchEndX;
 
     // Soglia minima per evitare attivazioni accidentali
     const swipeThreshold = 30;
 
-    if (Math.abs(deltaY) > swipeThreshold) {
+    if (Math.abs(deltaX) > swipeThreshold) {
         scrolling = true;
 
-        if (deltaY > 0 && currentStep < totalSteps) {
+        if (deltaX > 0 && currentStep < totalSteps) {
             currentStep++; // swipe up
-        } else if (deltaY < 0 && currentStep > 1) {
+        } else if (deltaX < 0 && currentStep > 1) {
             currentStep--; // swipe down
         }
 
@@ -476,6 +478,12 @@ async function generateCaptcha() {
     generateBtn.textContent = 'Generating...';
     generateBtn.disabled = true;
 
+    verifyBtn.textContent = "I am not a robot"
+    verifyBtn.classList.remove("btn-ok")
+    verifyBtn.classList.remove("btn-error")
+    verifyBtn.classList.add('btn-outline');
+    userInput.value = ""
+
     // Show loading spinner
     captchaDisplay.innerHTML = `
         <div class="captcha-placeholder">
@@ -501,7 +509,7 @@ async function generateCaptcha() {
     const [plmin, plmax] = plength_slider.noUiSlider.get().map(Number);
     const [pomin, pomax] = popacity_slider.noUiSlider.get().map(Number);
 
-    const response = await fetch(`${window.location.protocol}/captcha.json
+    const query = `${window.location.href}captcha.json
         ?width=500
         &height=100
         &nletters=${lemin},${lemax}
@@ -521,9 +529,11 @@ async function generateCaptcha() {
         &pstroke=${psmin},${psmax}
         &plength=${plmin},${plmax}
         &popacity=${pomin},${pomax}`
-        .replaceAll(" ","").replaceAll("\n",""), 
-        { method : "GET" }
-    )
+        .replaceAll(" ","").replaceAll("\n","")
+
+    document.getElementById("query-url").textContent = query;
+
+    const response = await fetch(query, { method : "GET" })
     .then(res => res.json())
     .catch(error => {
         console.log(error);
@@ -553,6 +563,21 @@ async function generateCaptcha() {
     captchaText = response.text;
     generateBtn.textContent = 'Generate Captcha';
     generateBtn.disabled = false;
+}
+
+function verifyCaptcha() {
+    if (userInput.value.trim() === captchaText) {
+        verifyBtn.classList.add('btn-ok');
+        verifyBtn.classList.remove('btn-error');
+        verifyBtn.classList.remove('btn-outline');
+        verifyBtn.textContent = "You are not a robot!"
+    }
+    else {
+        verifyBtn.classList.add('btn-error');
+        verifyBtn.classList.remove('btn-ok');
+        verifyBtn.classList.remove('btn-outline');
+        verifyBtn.textContent = "Wrong! You are a robot!"
+    }
 }
 
 function debounce(func, delay) {
