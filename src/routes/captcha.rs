@@ -15,7 +15,7 @@ use getrandom::fill;
 const VALID_CHARS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const SVG_TEMPLATE: &str = include_str!("../assets/template.svg");
 
-pub async fn fetch(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
     let url = req.url()?;
     let default_format = String::from("json");
     let query: HashMap<String, String> = url.query_pairs()
