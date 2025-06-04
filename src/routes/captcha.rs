@@ -1,3 +1,4 @@
+use usvg::fontdb;
 use worker::*;
 
 use std::{collections::HashMap};
@@ -5,6 +6,9 @@ use std::{collections::HashMap};
 use crate::utils::*;
 
 use base64::{engine::general_purpose, Engine as _};
+use resvg::usvg::{Tree, Options};
+use resvg::render;
+use tiny_skia::Pixmap;
 use serde_json::json;
 use getrandom::fill;
 
@@ -101,7 +105,30 @@ pub async fn fetch(req: Request, ctx: RouteContext<()>) -> Result<Response> {
 
             Ok(response)
         }
-        "xml" => {
+        "png" => {
+            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
+            
+            let mut fontdb = fontdb::Database::new();
+            fontdb.load_font_data(font_bytes.to_vec());
+            fontdb.set_serif_family("Playfair Display");
+
+            let mut opt = Options::default();
+            opt.fontdb = fontdb.into();
+
+            let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
+            let size = rtree.size();
+
+            let mut pixmap = Pixmap::new(size.width() as u32, size.height() as u32).expect("Failed to create Pixmap");
+            render(&rtree, tiny_skia::Transform::identity(), &mut pixmap.as_mut());
+
+            let png_bytes = pixmap.encode_png().expect("Failed to encode PNG");
+
+            let mut response = Response::from_body(ResponseBody::Body(png_bytes))?;
+            response.headers_mut().append("Content-Type", "image/png")?;
+
+            Ok(response)
+        }
+        "xml" | "xml+svg" => {
             let svg_base64 = general_purpose::STANDARD.encode(svg.as_bytes());
 
             let payload = format!(
@@ -117,12 +144,60 @@ pub async fn fetch(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
             Ok(response)
         }
-        "json" | _ => {
+        "xml+png" => {
+            let opt = Options::default();
+            let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
+            let size = rtree.size();
+
+            let mut pixmap = Pixmap::new(size.width() as u32, size.height() as u32).expect("Failed to create Pixmap");
+            render(&rtree, tiny_skia::Transform::identity(), &mut pixmap.as_mut());
+
+            let png_bytes = pixmap.encode_png().expect("Failed to encode PNG");
+
+            let png_base64 = general_purpose::STANDARD.encode(png_bytes);
+
+            let payload = format!(
+                r#"<response>
+                    <image>data:image/svg+xml;base64,{}</image>
+                    <text>{}</text>
+                   </response>"#,
+                png_base64, letters
+            );
+
+            let mut response = Response::from_body(ResponseBody::Body(payload.into_bytes()))?;
+            response.headers_mut().append("Content-Type", "application/xml")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+            Ok(response)
+        }
+        "json+png" => {
+            let opt = Options::default();
+            let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
+            let size = rtree.size();
+
+            let mut pixmap = Pixmap::new(size.width() as u32, size.height() as u32).expect("Failed to create Pixmap");
+            render(&rtree, tiny_skia::Transform::identity(), &mut pixmap.as_mut());
+
+            let png_bytes = pixmap.encode_png().expect("Failed to encode PNG");
+
+            let png_base64 = general_purpose::STANDARD.encode(png_bytes);
+
+            let payload = json!({
+                "text" : letters,
+                "image": format!("data:image/png;base64,{}", png_base64)
+            });
+
+            let mut response = Response::from_json(&payload)?;
+            response.headers_mut().append("Content-Type", "application/json")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+
+            Ok(response)
+        }
+        "json+svg" | "json" | _ => {
             let svg_base64 = general_purpose::STANDARD.encode(svg.as_bytes());
 
             let payload = json!({
-                "image": format!("data:image/svg+xml;base64,{}", svg_base64),
-                "text" : letters
+                "text" : letters,
+                "image": format!("data:image/svg+xml;base64,{}", svg_base64)
             });
 
             let mut response = Response::from_json(&payload)?;
@@ -226,7 +301,7 @@ fn generate_svg(
                 <text 
                     x="0"
                     y="0"
-                    font-family="Arial"
+                    font-family="Playfair Display"
                     font-size="{fsize:.1}" 
                     fill="black"
                     fill-opacity="{opacity}"

@@ -111,11 +111,12 @@
 
                 <div class="feature-card">
                     <h3>Multiple Formats</h3>
-                    <p>Support for JSON, XML and SVG output formats</p>
+                    <p>Support for JSON, XML, SVG and PNG output formats</p>
                     <div class="tags">
                         <span class="tag">JSON</span>
                         <span class="tag">XML</span>
                         <span class="tag">SVG</span>
+                        <span class="tag">PNG</span>
                     </div>
                 </div>
 
@@ -480,7 +481,7 @@
                                             <td><code>/captcha.[format]</code></td>
                                             <td>string</td>
                                             <td><span class="required-no">No</span></td>
-                                            <td><code>json</code>,<code>svg</code>,<code>xml</code></td>
+                                            <td><code>json</code>(<code>json+svg</code>),<code>json+png</code>,<code>svg</code>,<code>png</code>,<code>xml</code></td>
                                             <td><code>json</code></td>
                                             <td>Specifies the response format.</td>
                                         </tr>
@@ -669,7 +670,7 @@
                             <div class="params-table">
                                 <h4>Response</h4>
 
-                                <h6>JSON</h6>
+                                <h6>JSON (JSON + SVG)</h6>
                                 <table>
                                     <thead>
                                         <tr>
@@ -695,7 +696,7 @@
                                     </tbody>
                                 </table>
                                 <br>
-                                <h6>XML</h6>
+                                <h6>XML (XML + SVG)</h6>
                                 <table>
                                     <thead>
                                         <tr>
@@ -711,6 +712,58 @@
                                             <td>data:image/svg+xml;base64</td>
                                             <td>"data:image/svg+xml;base64,..."</td>
                                             <td>An SVG image encoded in base64 and returned as a data URI</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>text</code></td>
+                                            <td>string</td>
+                                            <td>"L0dzeB"</td>
+                                            <td>The string of characters rendered in the CAPTCHA image</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <h6>JSON + PNG</h6>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Example</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>image</code></td>
+                                            <td>data:image/png;base64</td>
+                                            <td>"data:image/png;base64,..."</td>
+                                            <td>A PNG image encoded in base64 and returned as a data URI</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>text</code></td>
+                                            <td>string</td>
+                                            <td>"L0dzeB"</td>
+                                            <td>The string of characters rendered in the CAPTCHA image</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <h6>XML + PNG</h6>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Example</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>image</code></td>
+                                            <td>data:image/png;base64</td>
+                                            <td>"data:image/png;base64,..."</td>
+                                            <td>A PNG image encoded in base64 and returned as a data URI</td>
                                         </tr>
                                         <tr>
                                             <td><code>text</code></td>
@@ -737,6 +790,26 @@
                                             <td>image/svg+xml</td>
                                             <td><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNTAgNTAiPg0KICA8ZGVmcz4NCiAgICA8cGF0dGVybiBpZD0ibm9pc2VQYXR0ZXJuIiB3aWR0aD0iMiIgaGVpZ2h0PSIyIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4NCiAgICAgIDxjaXJjbGUgY3g9IjEiIGN5PSIxIiByPSIwLjUiIGZpbGw9InJnYmEoMCwwLDAsMC4xKSIgLz4NCiAgICAgIDxjaXJjbGUgY3g9IjEuNSIgY3k9IjEuNSIgcj0iMC41IiBmaWxsPSJyZ2JhKDAsMCwwLDAuMSkiIC8+DQogICAgPC9wYXR0ZXJuPg0KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4NCiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZGZkZmQiIC8+DQogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOWI5ZGYiIC8+DQogICAgPC9saW5lYXJHcmFkaWVudD4NCiAgICA8ZmlsdGVyIGlkPSJibHVyLTAuMCIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4wIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuMCIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4wIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuNSIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC41IiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuMyIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4zIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj4NCiAgPC9kZWZzPg0KDQogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYmcpIiAvPg0KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI25vaXNlUGF0dGVybikiIC8+DQogIDxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTguMCwgMjUuMCkgcm90YXRlKDcuMSkgc2NhbGUoMC44NSwxLjA2KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuMCkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI4LjQiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC42MjExNzY1IgogICAgICAgICAgICAgICAgICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIAogICAgICAgICAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiPgogICAgICAgICAgICAgICAgICAgIDUKICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgPC9nPjxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTMuNywgMjUuMCkgcm90YXRlKDEuMikgc2NhbGUoMS4xMCwwLjk0KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuMCkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI5LjAiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC44NiIKICAgICAgICAgICAgICAgICAgICBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiAKICAgICAgICAgICAgICAgICAgICB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgICAgICAgICAgICAgICAgICB4CiAgICAgICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgICAgIDwvZz48ZyAKICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEzNS44LCAyNS4wKSByb3RhdGUoMTMuNikgc2NhbGUoMC44MCwxLjE1KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuNSkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI2LjgiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC43NDQ3MDU5IgogICAgICAgICAgICAgICAgICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIAogICAgICAgICAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiPgogICAgICAgICAgICAgICAgICAgIFIKICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgPC9nPjxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTY5LjgsIDI1LjApIHJvdGF0ZSg3LjQpIHNjYWxlKDEuMTksMS4wNCkiCiAgICAgICAgICAgICAgICBmaWx0ZXI9InVybCgjYmx1ci0wLjMpIj4KICAgICAgICAgICAgICAgIDx0ZXh0IAogICAgICAgICAgICAgICAgICAgIHg9IjAiCiAgICAgICAgICAgICAgICAgICAgeT0iMCIKICAgICAgICAgICAgICAgICAgICBmb250LWZhbWlseT0iQXJpYWwiCiAgICAgICAgICAgICAgICAgICAgZm9udC1zaXplPSIyNi45IiAKICAgICAgICAgICAgICAgICAgICBmaWxsPSJibGFjayIKICAgICAgICAgICAgICAgICAgICBmaWxsLW9wYWNpdHk9IjAuNjA0NzA1OSIKICAgICAgICAgICAgICAgICAgICBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiAKICAgICAgICAgICAgICAgICAgICB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgICAgICAgICAgICAgICAgICA0CiAgICAgICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgICAgIDwvZz4NCiAgPGxpbmUgeDE9IjEwMi45IiB5MT0iMi40IiB4Mj0iMjIzLjUiIHkyPSIzNi4xIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC4yOCIgc3Ryb2tlLXdpZHRoPSIyLjEiIC8+PGxpbmUgeDE9IjczLjUiIHkxPSIyOS44IiB4Mj0iNzAuNiIgeTI9IjE3LjgiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS1vcGFjaXR5PSIwLjE5IiBzdHJva2Utd2lkdGg9IjEuOSIgLz48bGluZSB4MT0iNTYuOSIgeTE9IjQuNyIgeDI9IjU4LjgiIHkyPSIyNC45IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC41NiIgc3Ryb2tlLXdpZHRoPSIyLjYiIC8+DQogIDxjaXJjbGUgY3g9IjEwNC45IiBjeT0iMy41IiByPSIyLjciIGZpbGw9InJnYigxNzQsMTc0LDE3NCkiIGZpbGwtb3BhY2l0eT0iMC4zNCIgLz48Y2lyY2xlIGN4PSIxNjEuOCIgY3k9IjI2LjUiIHI9IjMuMCIgZmlsbD0icmdiKDczLDczLDczKSIgZmlsbC1vcGFjaXR5PSIwLjY1IiAvPjxjaXJjbGUgY3g9IjIwMS4wIiBjeT0iMjAuMCIgcj0iMS4wIiBmaWxsPSJyZ2IoNzYsNzYsNzYpIiBmaWxsLW9wYWNpdHk9IjAuNzYiIC8+PGNpcmNsZSBjeD0iMTczLjUiIGN5PSI1LjMiIHI9IjMuMCIgZmlsbD0icmdiKDE2NSwxNjUsMTY1KSIgZmlsbC1vcGFjaXR5PSIwLjUzIiAvPjxjaXJjbGUgY3g9IjE5Ny4xIiBjeT0iOC4yIiByPSIyLjkiIGZpbGw9InJnYig4MSw4MSw4MSkiIGZpbGwtb3BhY2l0eT0iMC42OSIgLz48Y2lyY2xlIGN4PSIxNzIuNSIgY3k9IjE1LjkiIHI9IjEuMSIgZmlsbD0icmdiKDM2LDM2LDM2KSIgZmlsbC1vcGFjaXR5PSIwLjI0IiAvPjxjaXJjbGUgY3g9IjIyOC40IiBjeT0iMC4wIiByPSIxLjQiIGZpbGw9InJnYig0NSw0NSw0NSkiIGZpbGwtb3BhY2l0eT0iMC4zNCIgLz48Y2lyY2xlIGN4PSIyMDMuOSIgY3k9IjI2LjMiIHI9IjEuNSIgZmlsbD0icmdiKDE1MiwxNTIsMTUyKSIgZmlsbC1vcGFjaXR5PSIwLjI0IiAvPjxjaXJjbGUgY3g9IjE5OC4wIiBjeT0iMi4wIiByPSIxLjAiIGZpbGw9InJnYigxNDksMTQ5LDE0OSkiIGZpbGwtb3BhY2l0eT0iMC40NSIgLz48Y2lyY2xlIGN4PSIyMDIuOSIgY3k9IjQ5LjgiIHI9IjEuNSIgZmlsbD0icmdiKDM2LDM2LDM2KSIgZmlsbC1vcGFjaXR5PSIwLjI2IiAvPg0KICA8cGF0aCBkPSJNIDIwOS44IDIuMiBRIDEwNy44IDQ5LjYsIDE5Mi40IDAuMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuMjgiIHN0cm9rZS13aWR0aD0iMi44IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMTk4LjAgNDguOCBRIDEyMC42IDQyLjcsIDIwOS4zIDAuMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuMjciIHN0cm9rZS13aWR0aD0iMS40IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMjUwLjAgMjIuNyBRIDIyNi41IDEzLjksIDI1MC4wIDguNCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuNDMiIHN0cm9rZS13aWR0aD0iMi43IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMTMxLjQgNS4xIFEgNDcuMSAzNS41LCAxMjAuMCA1MC4wIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC41NSIgc3Ryb2tlLXdpZHRoPSIyLjAiIGZpbGw9Im5vbmUiIC8+DQo8L3N2Zz4NCg=="></img></td>
                                             <td>The captcha rendered as an SVG image</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <h6>PNG</h6>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Example</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>PNG image</code></td>
+                                            <td>image/png</td>
+                                            <td><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNTAgNTAiPg0KICA8ZGVmcz4NCiAgICA8cGF0dGVybiBpZD0ibm9pc2VQYXR0ZXJuIiB3aWR0aD0iMiIgaGVpZ2h0PSIyIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4NCiAgICAgIDxjaXJjbGUgY3g9IjEiIGN5PSIxIiByPSIwLjUiIGZpbGw9InJnYmEoMCwwLDAsMC4xKSIgLz4NCiAgICAgIDxjaXJjbGUgY3g9IjEuNSIgY3k9IjEuNSIgcj0iMC41IiBmaWxsPSJyZ2JhKDAsMCwwLDAuMSkiIC8+DQogICAgPC9wYXR0ZXJuPg0KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4NCiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZGZkZmQiIC8+DQogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOWI5ZGYiIC8+DQogICAgPC9saW5lYXJHcmFkaWVudD4NCiAgICA8ZmlsdGVyIGlkPSJibHVyLTAuMCIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4wIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuMCIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4wIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuNSIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC41IiAvPgogICAgICAgICAgICA8L2ZpbHRlcj48ZmlsdGVyIGlkPSJibHVyLTAuMyIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgICAgICAgICAgICA8ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMC4zIiAvPgogICAgICAgICAgICA8L2ZpbHRlcj4NCiAgPC9kZWZzPg0KDQogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjYmcpIiAvPg0KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI25vaXNlUGF0dGVybikiIC8+DQogIDxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTguMCwgMjUuMCkgcm90YXRlKDcuMSkgc2NhbGUoMC44NSwxLjA2KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuMCkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI4LjQiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC42MjExNzY1IgogICAgICAgICAgICAgICAgICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIAogICAgICAgICAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiPgogICAgICAgICAgICAgICAgICAgIDUKICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgPC9nPjxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTMuNywgMjUuMCkgcm90YXRlKDEuMikgc2NhbGUoMS4xMCwwLjk0KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuMCkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI5LjAiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC44NiIKICAgICAgICAgICAgICAgICAgICBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiAKICAgICAgICAgICAgICAgICAgICB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgICAgICAgICAgICAgICAgICB4CiAgICAgICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgICAgIDwvZz48ZyAKICAgICAgICAgICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEzNS44LCAyNS4wKSByb3RhdGUoMTMuNikgc2NhbGUoMC44MCwxLjE1KSIKICAgICAgICAgICAgICAgIGZpbHRlcj0idXJsKCNibHVyLTAuNSkiPgogICAgICAgICAgICAgICAgPHRleHQgCiAgICAgICAgICAgICAgICAgICAgeD0iMCIKICAgICAgICAgICAgICAgICAgICB5PSIwIgogICAgICAgICAgICAgICAgICAgIGZvbnQtZmFtaWx5PSJBcmlhbCIKICAgICAgICAgICAgICAgICAgICBmb250LXNpemU9IjI2LjgiIAogICAgICAgICAgICAgICAgICAgIGZpbGw9ImJsYWNrIgogICAgICAgICAgICAgICAgICAgIGZpbGwtb3BhY2l0eT0iMC43NDQ3MDU5IgogICAgICAgICAgICAgICAgICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIAogICAgICAgICAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiPgogICAgICAgICAgICAgICAgICAgIFIKICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgPC9nPjxnIAogICAgICAgICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTY5LjgsIDI1LjApIHJvdGF0ZSg3LjQpIHNjYWxlKDEuMTksMS4wNCkiCiAgICAgICAgICAgICAgICBmaWx0ZXI9InVybCgjYmx1ci0wLjMpIj4KICAgICAgICAgICAgICAgIDx0ZXh0IAogICAgICAgICAgICAgICAgICAgIHg9IjAiCiAgICAgICAgICAgICAgICAgICAgeT0iMCIKICAgICAgICAgICAgICAgICAgICBmb250LWZhbWlseT0iQXJpYWwiCiAgICAgICAgICAgICAgICAgICAgZm9udC1zaXplPSIyNi45IiAKICAgICAgICAgICAgICAgICAgICBmaWxsPSJibGFjayIKICAgICAgICAgICAgICAgICAgICBmaWxsLW9wYWNpdHk9IjAuNjA0NzA1OSIKICAgICAgICAgICAgICAgICAgICBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiAKICAgICAgICAgICAgICAgICAgICB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgICAgICAgICAgICAgICAgICA0CiAgICAgICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgICAgIDwvZz4NCiAgPGxpbmUgeDE9IjEwMi45IiB5MT0iMi40IiB4Mj0iMjIzLjUiIHkyPSIzNi4xIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC4yOCIgc3Ryb2tlLXdpZHRoPSIyLjEiIC8+PGxpbmUgeDE9IjczLjUiIHkxPSIyOS44IiB4Mj0iNzAuNiIgeTI9IjE3LjgiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS1vcGFjaXR5PSIwLjE5IiBzdHJva2Utd2lkdGg9IjEuOSIgLz48bGluZSB4MT0iNTYuOSIgeTE9IjQuNyIgeDI9IjU4LjgiIHkyPSIyNC45IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC41NiIgc3Ryb2tlLXdpZHRoPSIyLjYiIC8+DQogIDxjaXJjbGUgY3g9IjEwNC45IiBjeT0iMy41IiByPSIyLjciIGZpbGw9InJnYigxNzQsMTc0LDE3NCkiIGZpbGwtb3BhY2l0eT0iMC4zNCIgLz48Y2lyY2xlIGN4PSIxNjEuOCIgY3k9IjI2LjUiIHI9IjMuMCIgZmlsbD0icmdiKDczLDczLDczKSIgZmlsbC1vcGFjaXR5PSIwLjY1IiAvPjxjaXJjbGUgY3g9IjIwMS4wIiBjeT0iMjAuMCIgcj0iMS4wIiBmaWxsPSJyZ2IoNzYsNzYsNzYpIiBmaWxsLW9wYWNpdHk9IjAuNzYiIC8+PGNpcmNsZSBjeD0iMTczLjUiIGN5PSI1LjMiIHI9IjMuMCIgZmlsbD0icmdiKDE2NSwxNjUsMTY1KSIgZmlsbC1vcGFjaXR5PSIwLjUzIiAvPjxjaXJjbGUgY3g9IjE5Ny4xIiBjeT0iOC4yIiByPSIyLjkiIGZpbGw9InJnYig4MSw4MSw4MSkiIGZpbGwtb3BhY2l0eT0iMC42OSIgLz48Y2lyY2xlIGN4PSIxNzIuNSIgY3k9IjE1LjkiIHI9IjEuMSIgZmlsbD0icmdiKDM2LDM2LDM2KSIgZmlsbC1vcGFjaXR5PSIwLjI0IiAvPjxjaXJjbGUgY3g9IjIyOC40IiBjeT0iMC4wIiByPSIxLjQiIGZpbGw9InJnYig0NSw0NSw0NSkiIGZpbGwtb3BhY2l0eT0iMC4zNCIgLz48Y2lyY2xlIGN4PSIyMDMuOSIgY3k9IjI2LjMiIHI9IjEuNSIgZmlsbD0icmdiKDE1MiwxNTIsMTUyKSIgZmlsbC1vcGFjaXR5PSIwLjI0IiAvPjxjaXJjbGUgY3g9IjE5OC4wIiBjeT0iMi4wIiByPSIxLjAiIGZpbGw9InJnYigxNDksMTQ5LDE0OSkiIGZpbGwtb3BhY2l0eT0iMC40NSIgLz48Y2lyY2xlIGN4PSIyMDIuOSIgY3k9IjQ5LjgiIHI9IjEuNSIgZmlsbD0icmdiKDM2LDM2LDM2KSIgZmlsbC1vcGFjaXR5PSIwLjI2IiAvPg0KICA8cGF0aCBkPSJNIDIwOS44IDIuMiBRIDEwNy44IDQ5LjYsIDE5Mi40IDAuMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuMjgiIHN0cm9rZS13aWR0aD0iMi44IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMTk4LjAgNDguOCBRIDEyMC42IDQyLjcsIDIwOS4zIDAuMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuMjciIHN0cm9rZS13aWR0aD0iMS40IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMjUwLjAgMjIuNyBRIDIyNi41IDEzLjksIDI1MC4wIDguNCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuNDMiIHN0cm9rZS13aWR0aD0iMi43IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0gMTMxLjQgNS4xIFEgNDcuMSAzNS41LCAxMjAuMCA1MC4wIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utb3BhY2l0eT0iMC41NSIgc3Ryb2tlLXdpZHRoPSIyLjAiIGZpbGw9Im5vbmUiIC8+DQo8L3N2Zz4NCg=="></img></td>
+                                            <td>The captcha rendered as a PNG image</td>
                                         </tr>
                                     </tbody>
                                 </table>
