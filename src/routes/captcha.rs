@@ -145,7 +145,15 @@ pub async fn fetch(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
         "xml+png" => {
-            let opt = Options::default();
+            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
+            
+            let mut fontdb = fontdb::Database::new();
+            fontdb.load_font_data(font_bytes.to_vec());
+            fontdb.set_serif_family("Playfair Display");
+
+            let mut opt = Options::default();
+            opt.fontdb = fontdb.into();
+
             let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
             let size = rtree.size();
 
@@ -170,7 +178,15 @@ pub async fn fetch(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
         "json+png" => {
-            let opt = Options::default();
+            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
+            
+            let mut fontdb = fontdb::Database::new();
+            fontdb.load_font_data(font_bytes.to_vec());
+            fontdb.set_serif_family("Playfair Display");
+
+            let mut opt = Options::default();
+            opt.fontdb = fontdb.into();
+
             let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
             let size = rtree.size();
 
