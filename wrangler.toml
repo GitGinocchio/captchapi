@@ -7,6 +7,11 @@ assets = { directory = "./src/public", binding = "public" }
 [observability.logs]
 enabled = true
 
+[[unsafe.bindings]]
+name = "captchapi-rate-limiter"
+type = "ratelimit"
+namespace_id = "1"
+simple = { limit = 5, period = 10 }
 
 [limits]
 cpu_ms = 1000
