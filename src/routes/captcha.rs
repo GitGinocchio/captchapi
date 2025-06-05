@@ -14,6 +14,13 @@ use getrandom::fill;
 
 const VALID_CHARS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const SVG_TEMPLATE: &str = include_str!("../assets/template.svg");
+static FONTS: [(&'static str, &'static [u8]); 4] = [
+    ("Syne", include_bytes!("../assets/fonts/Syne/Syne-VariableFont_wght.ttf")),
+    ("Nunito", include_bytes!("../assets/fonts/Nunito/Nunito-VariableFont_wght.ttf")),
+    ("Roboto", include_bytes!("../assets/fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf")),
+    ("Playfair Display", include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf")),
+];
+
 
 pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
     let url = req.url()?;
@@ -72,8 +79,18 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
     let pstroke: ParamValue<f32> = get_param(&query, "pstroke", ParamValue::Range(1.0, 3.0));
     let plenght: ParamValue<f32> = get_param(&query,"plenght", ParamValue::Range(10.0, 60.0));
     let popacity: ParamValue<f32> = get_param(&query, "popacity", ParamValue::Range(0.1, 0.6));
+    let font_name: String = match get_param(&query, "font", ParamValue::Single(String::from("Roboto"))) {
+        ParamValue::List(ref vec) => random_element(&vec).unwrap_or(&String::from("Roboto")).clone(),
+        ParamValue::Range(_, _) => String::from("Roboto"),
+        ParamValue::Single(font_name) => font_name
+    };
+    let font_bytes = get_font_bytes(&font_name, &FONTS);
+    let mut fontdb = fontdb::Database::new();
+    fontdb.load_font_data(font_bytes.to_vec());
+    fontdb.set_serif_family(font_name.clone());
 
-    console_log!("Query: {query:?}");
+    let mut opt = Options::default();
+    opt.fontdb = fontdb.into();
 
     let letters = generate_random_letters(nletters as usize);
     let svg = generate_svg(
@@ -96,6 +113,8 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
         nlines,
         ncircles,
         npaths,
+        font_name, 
+        font_bytes
     );
 
     match format.as_str() {
@@ -106,15 +125,6 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
         "png" => {
-            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
-            
-            let mut fontdb = fontdb::Database::new();
-            fontdb.load_font_data(font_bytes.to_vec());
-            fontdb.set_serif_family("Playfair Display");
-
-            let mut opt = Options::default();
-            opt.fontdb = fontdb.into();
-
             let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
             let size = rtree.size();
 
@@ -146,15 +156,6 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
         "xml+png" => {
-            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
-            
-            let mut fontdb = fontdb::Database::new();
-            fontdb.load_font_data(font_bytes.to_vec());
-            fontdb.set_serif_family("Playfair Display");
-
-            let mut opt = Options::default();
-            opt.fontdb = fontdb.into();
-
             let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
             let size = rtree.size();
 
@@ -180,15 +181,6 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
             Ok(response)
         }
         "json+png" => {
-            let font_bytes: &[u8] = include_bytes!("../assets/fonts/playfair-display/PlayfairDisplay-Regular.ttf");
-            
-            let mut fontdb = fontdb::Database::new();
-            fontdb.load_font_data(font_bytes.to_vec());
-            fontdb.set_serif_family("Playfair Display");
-
-            let mut opt = Options::default();
-            opt.fontdb = fontdb.into();
-
             let rtree = Tree::from_str(&svg.as_str(), &opt).expect("Failed to parse SVG");
             let size = rtree.size();
 
@@ -248,7 +240,9 @@ fn generate_svg(
     popacity: ParamValue<f32>,
     nlines: u32,
     ncircles: u32,
-    npaths : u32
+    npaths : u32,
+    font_name : String,
+    font_bytes : &'static [u8]
 ) -> String {
     let canvas_width = 250.0;
     let canvas_height = 50.0;
@@ -321,7 +315,7 @@ fn generate_svg(
                 <text 
                     x="0"
                     y="0"
-                    font-family="Playfair Display"
+                    font-family="{font_name}"
                     font-size="{fsize:.1}" 
                     fill="black"
                     fill-opacity="{opacity}"
@@ -339,7 +333,19 @@ fn generate_svg(
     let noise_circles = generate_noise_circles(ncircles as usize, canvas_width, canvas_height, cradius, copacity);
     let noise_paths = generate_noise_paths(npaths as usize, canvas_width, canvas_height, pstroke, plenght, popacity, canvas_height);
 
+    let font_base64 = general_purpose::STANDARD.encode(font_bytes);
+
+    let style = format!(r#"
+    <style>
+    @font-face {{
+        font-family: "{font_name}";
+        src: url("data:font/ttf;base64,{font_base64}") format("truetype");
+    }}
+    </style>
+    "#);
+
     SVG_TEMPLATE
+        .replace("{{style}}", &style)
         .replace("{{filters}}", &filters)
         .replace("{{height}}", &height.to_string().as_str())
         .replace("{{width}}", &width.to_string().as_str())

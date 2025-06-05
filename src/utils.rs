@@ -53,3 +53,14 @@ pub fn get_param<T: FromStr + Clone>(query: &HashMap<String, String>, key: &str,
         None => default,
     }
 }
+
+pub fn get_font_bytes(font_name: &str, fonts : &[(&'static str, &'static [u8])]) -> &'static [u8] {
+    // Cerca il font richiesto
+    fonts.iter()
+        .find(|(name, _)| *name == font_name)
+        // Se non trovato, cerca "Roboto" come fallback
+        .or_else(|| fonts.iter().find(|(name, _)| *name == "Roboto"))
+        // unwrap finale, sicuro se "Roboto" è sempre presente
+        .map(|(_, bytes)| *bytes)
+        .unwrap()
+}
