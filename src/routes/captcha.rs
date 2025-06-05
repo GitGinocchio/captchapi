@@ -141,7 +141,8 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
 
             let mut response = Response::from_body(ResponseBody::Body(payload.into_bytes()))?;
             response.headers_mut().append("Content-Type", "application/xml")?;
-            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "*")?;
+            response.headers_mut().append("Access-Control-Allow-Headers", "Content-Type")?;
             Ok(response)
         }
         "xml+png" => {
@@ -174,7 +175,8 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
 
             let mut response = Response::from_body(ResponseBody::Body(payload.into_bytes()))?;
             response.headers_mut().append("Content-Type", "application/xml")?;
-            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "*")?;
+            response.headers_mut().append("Access-Control-Allow-Headers", "Content-Type")?;
             Ok(response)
         }
         "json+png" => {
@@ -204,11 +206,12 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
 
             let mut response = Response::from_json(&payload)?;
             response.headers_mut().append("Content-Type", "application/json")?;
-            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "*")?;
+            response.headers_mut().append("Access-Control-Allow-Headers", "Content-Type")?;
 
             Ok(response)
         }
-        "json+svg" | "json" | _ => {
+        "json" | "json+svg" | _ => {
             let svg_base64 = general_purpose::STANDARD.encode(svg.as_bytes());
 
             let payload = json!({
@@ -218,7 +221,8 @@ pub async fn get(req: Request, ctx: RouteContext<()>) -> Result<Response> {
 
             let mut response = Response::from_json(&payload)?;
             response.headers_mut().append("Content-Type", "application/json")?;
-            response.headers_mut().append("Access-Control-Allow-Origin", "http://127.0.0.1:8787")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", "*")?;
+            response.headers_mut().append("Access-Control-Allow-Headers", "Content-Type")?;
 
             Ok(response)
         }
